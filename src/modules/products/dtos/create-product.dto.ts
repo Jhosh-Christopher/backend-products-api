@@ -8,5 +8,5 @@ export class CreateProductDto {
    @IsNotEmpty({message: 'Product price is required'})
    @IsNumber({},{message: 'Product price must be a number'})
    @Min(0,{message: 'Product price cannot be negative'})
-   price: number
+   price: number;
 }
