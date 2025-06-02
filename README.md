@@ -21,78 +21,148 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
 ## Project setup
 
-```bash
-$ npm install
-```
+ Uma API REST para gerenciamento de catálogo de produtos, construída com NestJS e PostgreSQL.
 
-## Compile and run the project
+  O que é e Para que Serve
 
-```bash
-# development
-$ npm run start
+  Esta API foi desenvolvida para gerenciar produtos de e-commerce, permitindo que administradores:
 
-# watch mode
-$ npm run start:dev
+  - Cadastrem novos produtos com validação automática
+  - Consultem o catálogo completo
+  - Atualizem informações de produtos existentes
 
-# production mode
-$ npm run start:prod
-```
+  Regras de Negócio
 
-## Run tests
+  - ✅ Nomes únicos: Impede produtos duplicados
+  - ✅ Preços válidos: Apenas valores positivos
+  - ✅ Auditoria: Registra criação e modificação automaticamente
 
-```bash
-# unit tests
-$ npm run test
+  Como Executar
 
-# e2e tests
-$ npm run test:e2e
+  Pré-requisitos
 
-# test coverage
-$ npm run test:cov
-```
+  - Node.js 18+
+  - PostgreSQL 14+
 
-## Deployment
+  Configuração Rápida
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+  # 1. Instalar dependências
+  npm install
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+  # 2. Configurar banco PostgreSQL
+  # Criar banco: products_api
+  # Criar usuário: api_user / senha: api123456
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+  # 3. Criar arquivo .env
+  DB_HOST=localhost
+  DB_PORT=5432
+  DB_USERNAME=api_user
+  DB_PASSWORD=api123456
+  DB_DATABASE=products_api
+  NODE_ENV=development
+  PORT=3000
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+  # 4. Iniciar aplicação
+  npm run start:dev
 
-## Resources
+  Endpoints Disponíveis
 
-Check out a few resources that may come in handy when working with NestJS:
+  POST /products - Criar produto
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+  # Requisição
+  curl -X POST http://localhost:3000/products \
+    -H "Content-Type: application/json" \
+    -d '{"name": "iPhone 15", "price": 5000.00}'
 
-## Support
+  # Resposta (201)
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "iPhone 15",
+    "price": 5000.00,
+    "created_at": "2025-01-15T10:30:00.000Z",
+    "updated_at": "2025-01-15T10:30:00.000Z"
+  }
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+  GET /products - Listar todos os produtos
 
-## Stay in touch
+  # Requisição
+  curl http://localhost:3000/products
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+  # Resposta (200)
+  [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "name": "iPhone 15",
+      "price": 5000.00,
+      "created_at": "2025-01-15T10:30:00.000Z",
+      "updated_at": "2025-01-15T10:30:00.000Z"
+    }
+  ]
 
-## License
+  PUT /products/:id - Atualizar produto
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+  # Requisição
+  curl -X PUT http://localhost:3000/products/550e8400-e29b-41d4-a716-446655440000 \
+    -H "Content-Type: application/json" \
+    -d '{"name": "iPhone 15 Pro", "price": 5500.00}'
+
+  # Resposta (200)
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "name": "iPhone 15 Pro",
+    "price": 5500.00,
+    "created_at": "2025-01-15T10:30:00.000Z",
+    "updated_at": "2025-01-15T10:35:00.000Z"
+  }
+
+  Principais Erros
+
+  Nome Duplicado (409)
+
+  {
+    "statusCode": 409,
+    "message": "Product with name 'iPhone 15' already exists",
+    "error": "ConflictException"
+  }
+
+  Dados Inválidos (400)
+
+  {
+    "statusCode": 400,
+    "message": ["Product name is required", "Product price cannot be negative"],
+    "error": "Bad Request"
+  }
+
+  UUID Inválido (400)
+
+  {
+    "statusCode": 400,
+    "message": "Invalid UUID format for id",
+    "error": "AppException"
+  }
+
+  Teste Rápido
+
+  # 1. Criar produto
+  curl -X POST http://localhost:3000/products \
+    -H "Content-Type: application/json" \
+    -d '{"name": "MacBook Pro", "price": 8000.00}'
+
+  # 2. Listar produtos
+  curl http://localhost:3000/products
+
+  # 3. Atualizar preço (usar UUID retornado)
+  curl -X PUT http://localhost:3000/products/SEU_UUID_AQUI \
+    -H "Content-Type: application/json" \
+    -d '{"price": 7500.00}'
+
+  Scripts
+
+  npm run start:dev    # Desenvolvimento
+  npm run build        # Compilar
+  npm run start:prod   # Produção
+
+  ---
+  API rodando em: http://localhost:3000
