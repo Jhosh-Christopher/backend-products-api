@@ -1,9 +1,17 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index} from 'typeorm';
-
+import {Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index, BeforeInsert} from 'typeorm';
+import { v4 as uuid } from 'uuid';
 @Entity('products')
 export class Product {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryColumn('uuid')
     id: string;
+
+    @BeforeInsert()
+    generateId() {
+        if (!this.id) {
+            this.id = uuid();
+        }
+
+    }
 
     @Index({ unique: true })
     @Column({type: 'varchar', length: 100, nullable: false})
