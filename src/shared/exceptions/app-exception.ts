@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus} from "@nestjs/common";
-
 export class AppException extends HttpException {
-    constructor(message: string, statusCode: HttpStatus.BAD_REQUEST) {
+    constructor(message: string, statusCode: HttpStatus.BAD_REQUEST = HttpStatus.BAD_REQUEST) {
         super(message, statusCode);
     }
 }

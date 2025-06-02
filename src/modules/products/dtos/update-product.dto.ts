@@ -3,7 +3,7 @@ export class UpdateProductDto {
 
     @IsOptional()
     @IsString({message: 'Product name must be a string'})
-    @MaxLength(100, {message: 'Product name cannnot exceed 100 characters'})
+    @MaxLength(100, {message: 'Product name cannot exceed 100 characters'})
     name?: string
 
     @IsOptional()

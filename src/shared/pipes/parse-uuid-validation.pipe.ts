@@ -2,7 +2,7 @@ import { ArgumentMetadata, Injectable, PipeTransform,HttpStatus } from "@nestjs/
 import { validate as isUUID } from "uuid";
 import { AppException } from "../exceptions/app-exception";
 
-Injectable()
+@Injectable()
 export class ParseUUIDValidationPipe implements PipeTransform<string> {
     transform(value: string, metadata: ArgumentMetadata):string {
         if (!isUUID(value)) {
